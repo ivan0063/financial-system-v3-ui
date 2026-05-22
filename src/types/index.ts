@@ -79,6 +79,36 @@ export interface DebtAccountStatusDto {
   almostCompletedDebts: AlmostCompletedDebtsDto[]
 }
 
+// ── Account Statement extraction ──────────────────────────────────────────────
+
+/** Enum values accepted by /extract and /sync as ?accountStatementType= */
+export type AccountStatementType =
+  | 'UNIVERSAL'
+  | 'MANUAL'
+  | 'RAPPI'
+  | 'PALACIO'
+  | 'LIVERPOOL'
+  | 'MERCADO_PAGO'
+  | 'BBVA'
+
+/** A debt already in the DB whose installment advanced in the new statement */
+export interface DebtInstallmentUpdateDto {
+  debt: Debt
+  previousInstallment: number
+  newInstallment: number
+}
+
+/**
+ * Returned by POST /account/statement/extract — read-only preview,
+ * nothing is written to the DB at this stage.
+ */
+export interface AccountStatementPreviewDto {
+  newDebts: Debt[]
+  installmentUpdates: DebtInstallmentUpdateDto[]
+}
+
+// ── Request bodies ────────────────────────────────────────────────────────────
+
 export interface CreateFinancialProviderReq {
   code: string
   name: string

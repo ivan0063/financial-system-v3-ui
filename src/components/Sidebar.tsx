@@ -4,6 +4,7 @@ import {
   Building2,
   CreditCard,
   Receipt,
+  FileUp,
   ListChecks,
   DollarSign,
   LogOut,
@@ -15,6 +16,7 @@ const NAV = [
   { to: '/providers', label: 'Financial Providers', icon: <Building2 size={18} /> },
   { to: '/accounts', label: 'Debt Accounts', icon: <CreditCard size={18} /> },
   { to: '/debts', label: 'Debts', icon: <Receipt size={18} /> },
+  { to: '/statement', label: 'Statement Import', icon: <FileUp size={18} /> },
   { to: '/expenses', label: 'Fixed Expenses', icon: <ListChecks size={18} /> },
   { to: '/payments', label: 'Payments', icon: <DollarSign size={18} /> },
 ]
