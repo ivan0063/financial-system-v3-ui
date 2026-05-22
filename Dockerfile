@@ -2,9 +2,9 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Install dependencies first (better layer caching)
+# Install dependencies (npm install generates a lockfile if absent)
 COPY package.json package-lock.json* ./
-RUN npm ci --frozen-lockfile
+RUN npm install
 
 # Copy source and build
 COPY . .
