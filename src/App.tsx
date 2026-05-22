@@ -8,6 +8,7 @@ import DebtAccounts from './pages/DebtAccounts'
 import Debts from './pages/Debts'
 import FixedExpenses from './pages/FixedExpenses'
 import Payments from './pages/Payments'
+import AccountStatement from './pages/AccountStatement'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="providers" element={<FinancialProviders />} />
             <Route path="accounts" element={<DebtAccounts />} />
             <Route path="debts" element={<Debts />} />
+            <Route path="statement" element={<AccountStatement />} />
             <Route path="expenses" element={<FixedExpenses />} />
             <Route path="payments" element={<Payments />} />
           </Route>
