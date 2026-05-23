@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Activity, Trash2, X, ChevronDown, ChevronUp } from 'lucide-react'
+import { Activity, Trash2, ChevronDown, ChevronUp } from 'lucide-react'
 import { useRequestLog } from '../context/RequestLogContext'
 
 const statusColor = (status: number | null, isError: boolean) => {
