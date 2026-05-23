@@ -6,10 +6,11 @@ import {
   getDebtAccountsByProvider,
   createDebtAccount,
   updateDebtAccount,
+  updateDebtAccountStatementType,
   deleteDebtAccount,
   getDebtAccountStatus,
 } from '../api/debtAccounts'
-import type { DebtAccount, CreateDebtAccountReq } from '../types'
+import type { AccountStatementType, DebtAccount, CreateDebtAccountReq } from '../types'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -18,7 +19,15 @@ import { Plus, Trash2, Edit2, CreditCard, ChevronRight, ChevronDown } from 'luci
 const fmt = (n: number) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n ?? 0)
 
-const STATEMENT_TYPES = ['DIGITAL', 'PDF', 'EMAIL', 'PHYSICAL', 'ONLINE']
+const STATEMENT_TYPES: AccountStatementType[] = [
+  'UNIVERSAL',
+  'MANUAL',
+  'RAPPI',
+  'PALACIO',
+  'LIVERPOOL',
+  'MERCADO_PAGO',
+  'BBVA',
+]
 
 export default function DebtAccounts() {
   const { email } = useUser()
@@ -67,6 +76,12 @@ export default function DebtAccounts() {
     },
   })
 
+  const updateTypeMut = useMutation({
+    mutationFn: ({ code, type }: { code: string; type: AccountStatementType }) =>
+      updateDebtAccountStatementType(code, type),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['debtAccounts'] }),
+  })
+
   const deleteMut = useMutation({
     mutationFn: (code: string) => deleteDebtAccount(code),
     onSuccess: () => {
@@ -104,8 +119,8 @@ export default function DebtAccounts() {
   if (loadingProviders) return <LoadingSpinner />
 
   return (
-    <div className="p-8 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Debt Accounts</h1>
           <p className="text-sm text-gray-500">Credit cards and debt accounts per provider</p>
@@ -141,7 +156,7 @@ export default function DebtAccounts() {
                 }`}
               >
                 <span>{p.name}</span>
-                <ChevronRight size={15} className="text-gray-400" />
+                <ChevronRight size={15} className="text-gray-400 shrink-0" />
               </button>
             ))}
             {providers.length === 0 && (
@@ -168,24 +183,39 @@ export default function DebtAccounts() {
             accounts.map((acc) => (
               <div
                 key={acc.code}
-                className={`bg-white rounded-xl shadow-sm p-5 ${
+                className={`bg-white rounded-xl shadow-sm p-4 sm:p-5 ${
                   statusAccount === acc.code ? 'ring-2 ring-blue-400' : ''
                 }`}
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900">{acc.name}</p>
                     <p className="text-xs text-gray-400 font-mono">{acc.code}</p>
-                    <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
+                    <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-600">
                       <span>
                         Credit: <strong className="text-gray-900">{fmt(acc.credit)}</strong>
                       </span>
                       <span>
                         Pay Day: <strong className="text-gray-900">{acc.payDay}</strong>
                       </span>
-                      <span>
-                        Type:{' '}
-                        <strong className="text-gray-900">{acc.accountStatementType}</strong>
+                      <span className="flex items-center gap-1.5">
+                        Type:
+                        <select
+                          value={acc.accountStatementType}
+                          onChange={(e) =>
+                            updateTypeMut.mutate({
+                              code: acc.code,
+                              type: e.target.value as AccountStatementType,
+                            })
+                          }
+                          className="text-xs border border-gray-200 rounded px-1.5 py-0.5 bg-gray-50 font-semibold text-gray-800 cursor-pointer hover:border-blue-400"
+                        >
+                          {STATEMENT_TYPES.map((t) => (
+                            <option key={t} value={t}>
+                              {t}
+                            </option>
+                          ))}
+                        </select>
                       </span>
                     </div>
                   </div>

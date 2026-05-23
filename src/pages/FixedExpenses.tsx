@@ -117,8 +117,8 @@ export default function FixedExpenses() {
   if (isLoading) return <LoadingSpinner />
 
   return (
-    <div className="p-8 space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Fixed Expenses</h1>
           <p className="text-sm text-gray-500">Recurring monthly bills</p>
@@ -140,18 +140,18 @@ export default function FixedExpenses() {
       </div>
 
       {/* Total banner */}
-      <div className="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
-        <div className="bg-yellow-500 p-3 rounded-lg text-white">
+      <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5 flex items-center gap-4">
+        <div className="bg-yellow-500 p-3 rounded-lg text-white shrink-0">
           <ListChecks size={22} />
         </div>
         <div>
           <p className="text-sm text-gray-500">Total Monthly Fixed Expenses</p>
-          <p className="text-3xl font-bold text-gray-900">{fmt(total)}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-gray-900">{fmt(total)}</p>
         </div>
       </div>
 
       {/* Categories */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
+      <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5">
         <h2 className="text-sm font-semibold text-gray-700 mb-3">Categories</h2>
         <div className="flex flex-wrap gap-2">
           {catalogs.map((c) => (
@@ -176,7 +176,7 @@ export default function FixedExpenses() {
 
       {/* Table */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b">
+        <div className="px-4 sm:px-6 py-4 border-b">
           <h2 className="text-base font-semibold text-gray-900">Expenses ({expenses.length})</h2>
         </div>
         {expenses.length === 0 ? (
@@ -185,50 +185,87 @@ export default function FixedExpenses() {
             <p className="text-sm">No fixed expenses yet.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-gray-500">
-              <tr>
-                <th className="px-6 py-3 text-left font-medium">Name</th>
-                <th className="px-6 py-3 text-left font-medium">Category</th>
-                <th className="px-6 py-3 text-left font-medium">Pay Day</th>
-                <th className="px-6 py-3 text-right font-medium">Monthly Cost</th>
-                <th className="px-6 py-3 text-right font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
+          <>
+            {/* Mobile cards */}
+            <div className="sm:hidden divide-y">
               {expenses.map((e) => (
-                <tr key={e.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium">{e.name}</td>
-                  <td className="px-6 py-4 text-gray-500">{e.fixedExpenseCatalog?.name ?? '-'}</td>
-                  <td className="px-6 py-4">Day {e.paymentDay}</td>
-                  <td className="px-6 py-4 text-right font-semibold">{fmt(e.monthlyCost)}</td>
-                  <td className="px-6 py-4 text-right">
+                <div key={e.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm truncate">{e.name}</p>
+                    <p className="text-xs text-gray-400">
+                      {e.fixedExpenseCatalog?.name ?? '-'} · Day {e.paymentDay}
+                    </p>
+                    <p className="text-sm font-semibold text-gray-900">{fmt(e.monthlyCost)}</p>
+                  </div>
+                  <div className="flex gap-1 shrink-0">
                     <button
                       onClick={() => openEdit(e)}
-                      className="p-1 text-blue-500 hover:text-blue-700 mr-1"
+                      className="p-1.5 text-blue-500 hover:text-blue-700"
                     >
                       <Edit2 size={15} />
                     </button>
                     <button
                       onClick={() => setDeleteTarget({ type: 'expense', id: e.id })}
-                      className="p-1 text-red-400 hover:text-red-600"
+                      className="p-1.5 text-red-400 hover:text-red-600"
                     >
                       <Trash2 size={15} />
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-            <tfoot className="bg-gray-50">
-              <tr>
-                <td colSpan={3} className="px-6 py-3 text-sm font-semibold text-gray-700">
-                  Total
-                </td>
-                <td className="px-6 py-3 text-right font-bold text-gray-900">{fmt(total)}</td>
-                <td />
-              </tr>
-            </tfoot>
-          </table>
+              <div className="px-4 py-3 bg-gray-50 flex justify-between">
+                <span className="text-sm font-semibold text-gray-700">Total</span>
+                <span className="font-bold text-gray-900">{fmt(total)}</span>
+              </div>
+            </div>
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 text-gray-500">
+                  <tr>
+                    <th className="px-6 py-3 text-left font-medium">Name</th>
+                    <th className="px-6 py-3 text-left font-medium">Category</th>
+                    <th className="px-6 py-3 text-left font-medium">Pay Day</th>
+                    <th className="px-6 py-3 text-right font-medium">Monthly Cost</th>
+                    <th className="px-6 py-3 text-right font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {expenses.map((e) => (
+                    <tr key={e.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 font-medium">{e.name}</td>
+                      <td className="px-6 py-4 text-gray-500">{e.fixedExpenseCatalog?.name ?? '-'}</td>
+                      <td className="px-6 py-4">Day {e.paymentDay}</td>
+                      <td className="px-6 py-4 text-right font-semibold">{fmt(e.monthlyCost)}</td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => openEdit(e)}
+                          className="p-1 text-blue-500 hover:text-blue-700 mr-1"
+                        >
+                          <Edit2 size={15} />
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget({ type: 'expense', id: e.id })}
+                          className="p-1 text-red-400 hover:text-red-600"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot className="bg-gray-50">
+                  <tr>
+                    <td colSpan={3} className="px-6 py-3 text-sm font-semibold text-gray-700">
+                      Total
+                    </td>
+                    <td className="px-6 py-3 text-right font-bold text-gray-900">{fmt(total)}</td>
+                    <td />
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

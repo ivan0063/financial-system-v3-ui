@@ -107,9 +107,9 @@ export default function FinancialProviders() {
   if (loadingCatalogs || loadingProviders) return <LoadingSpinner />
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Financial Providers</h1>
           <p className="text-sm text-gray-500">Banks and financial institutions</p>
@@ -131,7 +131,7 @@ export default function FinancialProviders() {
       </div>
 
       {/* Catalog chips */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
+      <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5">
         <h2 className="text-sm font-semibold text-gray-700 mb-3">Provider Types</h2>
         <div className="flex flex-wrap gap-2">
           {catalogs.map((c) => (
@@ -156,7 +156,7 @@ export default function FinancialProviders() {
 
       {/* Providers table */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b">
+        <div className="px-4 sm:px-6 py-4 border-b">
           <h2 className="text-base font-semibold text-gray-900">Your Providers</h2>
         </div>
         {providers.length === 0 ? (
@@ -165,53 +165,88 @@ export default function FinancialProviders() {
             <p className="text-sm">No providers yet.</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr className="text-left text-gray-500">
-                <th className="px-6 py-3 font-medium">Code</th>
-                <th className="px-6 py-3 font-medium">Name</th>
-                <th className="px-6 py-3 font-medium">Type</th>
-                <th className="px-6 py-3 font-medium">Status</th>
-                <th className="px-6 py-3 font-medium text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
+          <>
+            {/* Mobile card list */}
+            <div className="sm:hidden divide-y">
               {providers.map((p) => (
-                <tr key={p.code} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 font-mono text-xs text-gray-400">{p.code}</td>
-                  <td className="px-6 py-4 font-medium">{p.name}</td>
-                  <td className="px-6 py-4 text-gray-500">
-                    {p.financialProviderCatalog?.name ?? '-'}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        p.active
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-500'
-                      }`}
-                    >
-                      {p.active ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
+                <div key={p.code} className="px-4 py-3 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm truncate">{p.name}</p>
+                    <p className="text-xs text-gray-400">
+                      {p.financialProviderCatalog?.name ?? '-'} ·{' '}
+                      <span className={p.active ? 'text-green-600' : 'text-gray-400'}>
+                        {p.active ? 'Active' : 'Inactive'}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="flex gap-1 shrink-0">
                     <button
                       onClick={() => openEdit(p)}
-                      className="p-1 text-blue-500 hover:text-blue-700 mr-1"
+                      className="p-1.5 text-blue-500 hover:text-blue-700"
                     >
                       <Edit2 size={15} />
                     </button>
                     <button
                       onClick={() => setDeleteTarget({ type: 'provider', id: p.code })}
-                      className="p-1 text-red-400 hover:text-red-600"
+                      className="p-1.5 text-red-400 hover:text-red-600"
                     >
                       <Trash2 size={15} />
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50">
+                  <tr className="text-left text-gray-500">
+                    <th className="px-6 py-3 font-medium">Code</th>
+                    <th className="px-6 py-3 font-medium">Name</th>
+                    <th className="px-6 py-3 font-medium">Type</th>
+                    <th className="px-6 py-3 font-medium">Status</th>
+                    <th className="px-6 py-3 font-medium text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {providers.map((p) => (
+                    <tr key={p.code} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 font-mono text-xs text-gray-400">{p.code}</td>
+                      <td className="px-6 py-4 font-medium">{p.name}</td>
+                      <td className="px-6 py-4 text-gray-500">
+                        {p.financialProviderCatalog?.name ?? '-'}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                            p.active
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-gray-100 text-gray-500'
+                          }`}
+                        >
+                          {p.active ? 'Active' : 'Inactive'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => openEdit(p)}
+                          className="p-1 text-blue-500 hover:text-blue-700 mr-1"
+                        >
+                          <Edit2 size={15} />
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget({ type: 'provider', id: p.code })}
+                          className="p-1 text-red-400 hover:text-red-600"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
