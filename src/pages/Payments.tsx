@@ -48,8 +48,8 @@ export default function Payments() {
   const totalPaid = payments.reduce((s, p) => s + (p.amount ?? 0), 0)
 
   return (
-    <div className="p-8 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Payments</h1>
           <p className="text-sm text-gray-500">Payment history and processing</p>
@@ -73,7 +73,7 @@ export default function Payments() {
       </div>
 
       {/* Selectors */}
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Provider</label>
           <select
@@ -82,7 +82,7 @@ export default function Payments() {
               setSelectedProvider(e.target.value || null)
               setSelectedAccount(null)
             }}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm"
           >
             <option value="">Select provider…</option>
             {providers.map((p) => (
@@ -98,7 +98,7 @@ export default function Payments() {
             <select
               value={selectedAccount ?? ''}
               onChange={(e) => setSelectedAccount(e.target.value || null)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm"
             >
               <option value="">Select account…</option>
               {accounts.map((a) => (
@@ -125,7 +125,7 @@ export default function Payments() {
         </div>
       )}
 
-      {/* Table */}
+      {/* Table / Cards */}
       {!selectedAccount ? (
         <div className="bg-white rounded-xl shadow-sm py-16 text-center text-gray-400">
           <DollarSign size={36} className="mx-auto mb-2 opacity-25" />
@@ -140,26 +140,41 @@ export default function Payments() {
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-gray-500">
-              <tr>
-                <th className="px-6 py-3 text-left font-medium">ID</th>
-                <th className="px-6 py-3 text-left font-medium">Payment Date</th>
-                <th className="px-6 py-3 text-right font-medium">Amount</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {payments.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 font-mono text-xs text-gray-400">#{p.id}</td>
-                  <td className="px-6 py-4">{p.paymentDate}</td>
-                  <td className="px-6 py-4 text-right font-semibold text-green-700">
-                    {fmt(p.amount)}
-                  </td>
+          {/* Mobile cards */}
+          <div className="sm:hidden divide-y">
+            {payments.map((p) => (
+              <div key={p.id} className="px-4 py-3 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-gray-400 font-mono">#{p.id}</p>
+                  <p className="text-sm">{p.paymentDate}</p>
+                </div>
+                <p className="font-semibold text-green-700">{fmt(p.amount)}</p>
+              </div>
+            ))}
+          </div>
+          {/* Desktop table */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 text-gray-500">
+                <tr>
+                  <th className="px-6 py-3 text-left font-medium">ID</th>
+                  <th className="px-6 py-3 text-left font-medium">Payment Date</th>
+                  <th className="px-6 py-3 text-right font-medium">Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y">
+                {payments.map((p) => (
+                  <tr key={p.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 font-mono text-xs text-gray-400">#{p.id}</td>
+                    <td className="px-6 py-4">{p.paymentDate}</td>
+                    <td className="px-6 py-4 text-right font-semibold text-green-700">
+                      {fmt(p.amount)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

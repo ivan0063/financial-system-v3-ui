@@ -105,8 +105,8 @@ export default function Debts() {
   const totalOriginal = debts.reduce((s, d) => s + d.originalAmount, 0)
 
   return (
-    <div className="p-8 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Debts</h1>
           <p className="text-sm text-gray-500">Individual debt items per account</p>
@@ -133,7 +133,7 @@ export default function Debts() {
       </div>
 
       {/* Selectors */}
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Provider</label>
           <select
@@ -142,7 +142,7 @@ export default function Debts() {
               setSelectedProvider(e.target.value || null)
               setSelectedAccount(null)
             }}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm"
           >
             <option value="">Select provider…</option>
             {providers.map((p) => (
@@ -158,7 +158,7 @@ export default function Debts() {
             <select
               value={selectedAccount ?? ''}
               onChange={(e) => setSelectedAccount(e.target.value || null)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm"
             >
               <option value="">Select account…</option>
               {accounts.map((a) => (
@@ -173,7 +173,7 @@ export default function Debts() {
 
       {/* Summary */}
       {selectedAccount && debts.length > 0 && (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white rounded-xl shadow-sm p-4">
             <p className="text-xs text-gray-500">Active Debts</p>
             <p className="text-2xl font-bold text-gray-900">{debts.length}</p>
@@ -189,7 +189,7 @@ export default function Debts() {
         </div>
       )}
 
-      {/* Table */}
+      {/* Table / Cards */}
       {!selectedAccount ? (
         <div className="bg-white rounded-xl shadow-sm py-16 text-center text-gray-400">
           <Receipt size={36} className="mx-auto mb-2 opacity-25" />
@@ -204,70 +204,111 @@ export default function Debts() {
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-gray-500">
-              <tr>
-                <th className="px-6 py-3 text-left font-medium">Description</th>
-                <th className="px-6 py-3 text-left font-medium">Date</th>
-                <th className="px-6 py-3 text-left font-medium">Progress</th>
-                <th className="px-6 py-3 text-right font-medium">Monthly</th>
-                <th className="px-6 py-3 text-right font-medium">Original</th>
-                <th className="px-6 py-3 text-right font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {debts.map((d) => {
-                const pct = Math.min(
-                  (d.currentInstallment / d.maxFinancingTerm) * 100,
-                  100,
-                )
-                const remaining = d.maxFinancingTerm - d.currentInstallment
-                return (
-                  <tr key={d.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <p className="font-medium text-gray-900">{d.description}</p>
-                    </td>
-                    <td className="px-6 py-4 text-gray-500">{d.operationDate}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-20 bg-gray-200 rounded-full h-1.5">
-                          <div
-                            className="bg-blue-500 h-1.5 rounded-full"
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
-                        <span
-                          className={`text-xs px-1.5 py-0.5 rounded-full ${
-                            remaining <= 3
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-blue-100 text-blue-700'
-                          }`}
-                        >
-                          {d.currentInstallment}/{d.maxFinancingTerm}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right font-semibold">{fmt(d.monthlyPayment)}</td>
-                    <td className="px-6 py-4 text-right text-gray-500">{fmt(d.originalAmount)}</td>
-                    <td className="px-6 py-4 text-right">
+          {/* Mobile cards */}
+          <div className="sm:hidden divide-y">
+            {debts.map((d) => {
+              const remaining = d.maxFinancingTerm - d.currentInstallment
+              return (
+                <div key={d.id} className="px-4 py-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm truncate">{d.description}</p>
+                      <p className="text-xs text-gray-400">
+                        {d.operationDate} · {d.currentInstallment}/{d.maxFinancingTerm}
+                        {remaining <= 3 && (
+                          <span className="ml-1 text-green-600 font-medium">almost done</span>
+                        )}
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                        {fmt(d.monthlyPayment)}/mo
+                      </p>
+                    </div>
+                    <div className="flex gap-1 shrink-0">
                       <button
                         onClick={() => openEdit(d)}
-                        className="p-1 text-blue-500 hover:text-blue-700 mr-1"
+                        className="p-1.5 text-blue-500 hover:text-blue-700"
                       >
                         <Edit2 size={15} />
                       </button>
                       <button
                         onClick={() => setDeleteTarget(d.id)}
-                        className="p-1 text-red-400 hover:text-red-600"
+                        className="p-1.5 text-red-400 hover:text-red-600"
                       >
                         <Trash2 size={15} />
                       </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          {/* Desktop table */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 text-gray-500">
+                <tr>
+                  <th className="px-6 py-3 text-left font-medium">Description</th>
+                  <th className="px-6 py-3 text-left font-medium">Date</th>
+                  <th className="px-6 py-3 text-left font-medium">Progress</th>
+                  <th className="px-6 py-3 text-right font-medium">Monthly</th>
+                  <th className="px-6 py-3 text-right font-medium">Original</th>
+                  <th className="px-6 py-3 text-right font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {debts.map((d) => {
+                  const pct = Math.min(
+                    (d.currentInstallment / d.maxFinancingTerm) * 100,
+                    100,
+                  )
+                  const remaining = d.maxFinancingTerm - d.currentInstallment
+                  return (
+                    <tr key={d.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <p className="font-medium text-gray-900">{d.description}</p>
+                      </td>
+                      <td className="px-6 py-4 text-gray-500">{d.operationDate}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-20 bg-gray-200 rounded-full h-1.5">
+                            <div
+                              className="bg-blue-500 h-1.5 rounded-full"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span
+                            className={`text-xs px-1.5 py-0.5 rounded-full ${
+                              remaining <= 3
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-blue-100 text-blue-700'
+                            }`}
+                          >
+                            {d.currentInstallment}/{d.maxFinancingTerm}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right font-semibold">{fmt(d.monthlyPayment)}</td>
+                      <td className="px-6 py-4 text-right text-gray-500">{fmt(d.originalAmount)}</td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => openEdit(d)}
+                          className="p-1 text-blue-500 hover:text-blue-700 mr-1"
+                        >
+                          <Edit2 size={15} />
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget(d.id)}
+                          className="p-1 text-red-400 hover:text-red-600"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

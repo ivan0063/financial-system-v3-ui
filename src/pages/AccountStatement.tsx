@@ -62,7 +62,6 @@ export default function AccountStatement() {
     onSuccess: (data) => {
       setSyncCount(data.length)
       setStep('synced')
-      // Invalidate all debt-related queries so other pages refresh
       qc.invalidateQueries({ queryKey: ['debts'] })
       qc.invalidateQueries({ queryKey: ['dashboard'] })
       qc.invalidateQueries({ queryKey: ['accountStatus'] })
@@ -84,7 +83,7 @@ export default function AccountStatement() {
   }
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Statement Import</h1>
@@ -94,12 +93,12 @@ export default function AccountStatement() {
       </div>
 
       {/* Step breadcrumb */}
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex flex-wrap items-center gap-2 text-sm">
         {(['setup', 'preview', 'synced'] as Step[]).map((s, i) => {
           const labels: Record<Step, string> = {
-            setup: '1  Configure',
-            preview: '2  Review Changes',
-            synced: '3  Done',
+            setup: '1  Configure',
+            preview: '2  Review Changes',
+            synced: '3  Done',
           }
           const current = step === s
           const past =
@@ -127,10 +126,10 @@ export default function AccountStatement() {
 
       {/* ── STEP 1: Setup ── */}
       {step === 'setup' && (
-        <div className="bg-white rounded-xl shadow-sm p-6 space-y-5">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 space-y-5">
           <h2 className="text-base font-semibold text-gray-900">Configuration</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Provider</label>
               <select
@@ -189,7 +188,7 @@ export default function AccountStatement() {
           {/* File drop zone */}
           <div
             onClick={() => fileRef.current?.click()}
-            className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-colors ${
+            className={`border-2 border-dashed rounded-xl p-6 sm:p-10 text-center cursor-pointer transition-colors ${
               file
                 ? 'border-blue-400 bg-blue-50'
                 : 'border-gray-300 hover:border-blue-300 hover:bg-gray-50'
@@ -208,7 +207,7 @@ export default function AccountStatement() {
                 <div className="text-left">
                   <p className="font-medium">{file.name}</p>
                   <p className="text-xs text-blue-400 mt-0.5">
-                    {(file.size / 1024).toFixed(1)} KB — click to change
+                    {(file.size / 1024).toFixed(1)} KB — click to change
                   </p>
                 </div>
               </div>
@@ -255,12 +254,12 @@ export default function AccountStatement() {
         <div className="space-y-5">
           {/* Summary cards */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl shadow-sm p-5">
+            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5">
               <p className="text-xs font-medium text-gray-500 mb-1">New Debts</p>
               <p className="text-3xl font-bold text-blue-600">{preview.newDebts.length}</p>
               <p className="text-xs text-gray-400 mt-1">will be added to the database</p>
             </div>
-            <div className="bg-white rounded-xl shadow-sm p-5">
+            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5">
               <p className="text-xs font-medium text-gray-500 mb-1">Installment Updates</p>
               <p className="text-3xl font-bold text-amber-600">{preview.installmentUpdates.length}</p>
               <p className="text-xs text-gray-400 mt-1">existing debts with a new installment count</p>
@@ -269,7 +268,7 @@ export default function AccountStatement() {
 
           {/* Up-to-date state */}
           {!hasChanges && (
-            <div className="bg-white rounded-xl shadow-sm p-12 text-center">
+            <div className="bg-white rounded-xl shadow-sm p-8 sm:p-12 text-center">
               <CheckCircle2 size={44} className="mx-auto mb-3 text-green-400" />
               <p className="font-semibold text-gray-800">Everything is up to date</p>
               <p className="text-sm text-gray-500 mt-1">
@@ -281,7 +280,7 @@ export default function AccountStatement() {
           {/* New debts table */}
           {preview.newDebts.length > 0 && (
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b flex items-center gap-2">
+              <div className="px-4 sm:px-6 py-4 border-b flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
                 <h2 className="text-base font-semibold text-gray-900">
                   New Debts ({preview.newDebts.length})
@@ -291,27 +290,27 @@ export default function AccountStatement() {
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50 text-gray-500">
                     <tr>
-                      <th className="px-6 py-3 text-left font-medium">Description</th>
-                      <th className="px-6 py-3 text-left font-medium">Date</th>
-                      <th className="px-6 py-3 text-center font-medium">Installments</th>
-                      <th className="px-6 py-3 text-right font-medium">Monthly</th>
-                      <th className="px-6 py-3 text-right font-medium">Original</th>
+                      <th className="px-4 sm:px-6 py-3 text-left font-medium">Description</th>
+                      <th className="px-4 sm:px-6 py-3 text-left font-medium">Date</th>
+                      <th className="px-4 sm:px-6 py-3 text-center font-medium">Installments</th>
+                      <th className="px-4 sm:px-6 py-3 text-right font-medium">Monthly</th>
+                      <th className="px-4 sm:px-6 py-3 text-right font-medium">Original</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
                     {preview.newDebts.map((d, i) => (
                       <tr key={i} className="hover:bg-blue-50/40">
-                        <td className="px-6 py-3 font-medium">{d.description}</td>
-                        <td className="px-6 py-3 text-gray-500">{d.operationDate}</td>
-                        <td className="px-6 py-3 text-center">
+                        <td className="px-4 sm:px-6 py-3 font-medium">{d.description}</td>
+                        <td className="px-4 sm:px-6 py-3 text-gray-500">{d.operationDate}</td>
+                        <td className="px-4 sm:px-6 py-3 text-center">
                           <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
                             {d.currentInstallment}/{d.maxFinancingTerm}
                           </span>
                         </td>
-                        <td className="px-6 py-3 text-right font-semibold">
+                        <td className="px-4 sm:px-6 py-3 text-right font-semibold">
                           {fmt(d.monthlyPayment)}
                         </td>
-                        <td className="px-6 py-3 text-right text-gray-500">
+                        <td className="px-4 sm:px-6 py-3 text-right text-gray-500">
                           {fmt(d.originalAmount)}
                         </td>
                       </tr>
@@ -325,7 +324,7 @@ export default function AccountStatement() {
           {/* Installment updates table */}
           {preview.installmentUpdates.length > 0 && (
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b flex items-center gap-2">
+              <div className="px-4 sm:px-6 py-4 border-b flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
                 <h2 className="text-base font-semibold text-gray-900">
                   Installment Updates ({preview.installmentUpdates.length})
@@ -335,11 +334,11 @@ export default function AccountStatement() {
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50 text-gray-500">
                     <tr>
-                      <th className="px-6 py-3 text-left font-medium">Description</th>
-                      <th className="px-6 py-3 text-center font-medium">Before</th>
-                      <th className="px-6 py-3 text-center font-medium">After</th>
-                      <th className="px-6 py-3 text-center font-medium">Max</th>
-                      <th className="px-6 py-3 text-right font-medium">Monthly</th>
+                      <th className="px-4 sm:px-6 py-3 text-left font-medium">Description</th>
+                      <th className="px-4 sm:px-6 py-3 text-center font-medium">Before</th>
+                      <th className="px-4 sm:px-6 py-3 text-center font-medium">After</th>
+                      <th className="px-4 sm:px-6 py-3 text-center font-medium">Max</th>
+                      <th className="px-4 sm:px-6 py-3 text-right font-medium">Monthly</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
@@ -348,11 +347,11 @@ export default function AccountStatement() {
                         u.debt.maxFinancingTerm - u.newInstallment <= 3
                       return (
                         <tr key={i} className="hover:bg-amber-50/40">
-                          <td className="px-6 py-3 font-medium">{u.debt.description}</td>
-                          <td className="px-6 py-3 text-center text-gray-400">
+                          <td className="px-4 sm:px-6 py-3 font-medium">{u.debt.description}</td>
+                          <td className="px-4 sm:px-6 py-3 text-center text-gray-400">
                             {u.previousInstallment}
                           </td>
-                          <td className="px-6 py-3 text-center">
+                          <td className="px-4 sm:px-6 py-3 text-center">
                             <span
                               className={`font-semibold ${
                                 almostDone ? 'text-green-600' : 'text-amber-600'
@@ -361,10 +360,10 @@ export default function AccountStatement() {
                               {u.newInstallment}
                             </span>
                           </td>
-                          <td className="px-6 py-3 text-center text-gray-500">
+                          <td className="px-4 sm:px-6 py-3 text-center text-gray-500">
                             {u.debt.maxFinancingTerm}
                           </td>
-                          <td className="px-6 py-3 text-right font-semibold">
+                          <td className="px-4 sm:px-6 py-3 text-right font-semibold">
                             {fmt(u.debt.monthlyPayment)}
                           </td>
                         </tr>
@@ -377,7 +376,7 @@ export default function AccountStatement() {
           )}
 
           {/* Actions */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <button
               onClick={reset}
               className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
@@ -415,7 +414,7 @@ export default function AccountStatement() {
 
       {/* ── STEP 3: Done ── */}
       {step === 'synced' && (
-        <div className="bg-white rounded-xl shadow-sm p-14 text-center space-y-4">
+        <div className="bg-white rounded-xl shadow-sm p-10 sm:p-14 text-center space-y-4">
           <CheckCircle2 size={52} className="mx-auto text-green-500" />
           <div>
             <h2 className="text-xl font-bold text-gray-900">Sync Complete</h2>

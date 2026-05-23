@@ -43,7 +43,7 @@ export default function Dashboard() {
 
   if (isError || !data) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3 text-red-700">
           <AlertCircle size={20} className="shrink-0" />
           <span className="text-sm">
@@ -72,7 +72,7 @@ export default function Dashboard() {
   }))
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-sm text-gray-500">Financial overview for {email}</p>
@@ -133,7 +133,7 @@ export default function Dashboard() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {pieData.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <h2 className="text-base font-semibold text-gray-900 mb-4">Monthly Budget Split</h2>
             <ResponsiveContainer width="100%" height={240}>
               <PieChart>
@@ -159,7 +159,7 @@ export default function Dashboard() {
         )}
 
         {accountChartData.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
             <h2 className="text-base font-semibold text-gray-900 mb-4">
               Credit Limit by Account
             </h2>
@@ -177,7 +177,7 @@ export default function Dashboard() {
 
       {/* Almost completed debts */}
       {(data.almostCompletedDebts?.length ?? 0) > 0 && (
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <CheckCircle2 size={18} className="text-green-500" />
             Almost Paid Off
@@ -198,7 +198,7 @@ export default function Dashboard() {
 
       {/* Fixed expenses summary */}
       {(data.userFixedExpenses?.length ?? 0) > 0 && (
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-4">Fixed Expenses</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

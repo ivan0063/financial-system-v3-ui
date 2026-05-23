@@ -119,8 +119,8 @@ export default function DebtAccounts() {
   if (loadingProviders) return <LoadingSpinner />
 
   return (
-    <div className="p-8 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Debt Accounts</h1>
           <p className="text-sm text-gray-500">Credit cards and debt accounts per provider</p>
@@ -156,7 +156,7 @@ export default function DebtAccounts() {
                 }`}
               >
                 <span>{p.name}</span>
-                <ChevronRight size={15} className="text-gray-400" />
+                <ChevronRight size={15} className="text-gray-400 shrink-0" />
               </button>
             ))}
             {providers.length === 0 && (
@@ -183,15 +183,15 @@ export default function DebtAccounts() {
             accounts.map((acc) => (
               <div
                 key={acc.code}
-                className={`bg-white rounded-xl shadow-sm p-5 ${
+                className={`bg-white rounded-xl shadow-sm p-4 sm:p-5 ${
                   statusAccount === acc.code ? 'ring-2 ring-blue-400' : ''
                 }`}
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900">{acc.name}</p>
                     <p className="text-xs text-gray-400 font-mono">{acc.code}</p>
-                    <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
+                    <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-600">
                       <span>
                         Credit: <strong className="text-gray-900">{fmt(acc.credit)}</strong>
                       </span>
